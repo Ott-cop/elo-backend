@@ -1,4 +1,6 @@
+
 use actix_web::{web, HttpServer, App, HttpResponse};
+use actix_http::header::{ACCESS_CONTROL_ALLOW_ORIGIN, AUTHORIZATION, ACCEPT};
 use serde::Deserialize;
 use sqlx::MySqlPool;
 
@@ -14,10 +16,12 @@ async fn main() -> std::io::Result<()> {
     let pool = sqlx::mysql::MySqlPool::connect(URL).await.unwrap();
     
     sqlx::migrate!("./migrations").run(&pool).await.unwrap();
-
+    
     let app_state = AppState { pool };
     HttpServer::new(move || {
+        let cors = actix_cors::Cors::default().allowed_origin("http://localhost:3000").allowed_headers(vec![ACCESS_CONTROL_ALLOW_ORIGIN, AUTHORIZATION, ACCEPT]);
         App::new()
+            .wrap(cors)
             .app_data(web::Data::new(app_state.clone()))
             .route("/form", web::post().to(create_contact))
             

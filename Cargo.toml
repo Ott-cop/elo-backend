@@ -6,7 +6,9 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-actix-web = {version="4.4.0", features=["actix-macros"]}
+actix-cors = "0.6.4"
+actix-http = "3.4.0"
+actix-web = {version="4.4.0", features=["macros"]}
 
 serde = {version="1.0.193", features=["serde_derive"]}
 sqlx = {version="0.7.3", features=["runtime-tokio", "mysql"]}
