@@ -1,9 +1,7 @@
 
 use actix_web::{web, HttpServer, App, HttpResponse};
-use actix_http::header::{ACCESS_CONTROL_ALLOW_ORIGIN, AUTHORIZATION, ACCEPT};
 use serde::Deserialize;
 use sqlx::MySqlPool;
-
 
 #[derive(Clone)]
 struct AppState {
@@ -12,14 +10,15 @@ struct AppState {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    const URL: &str = "mysql://root:@localhost:3306/elo";
+    const URL: &str = "mysql://development:654321@34.105.108.35:3306/elo-dev";
     let pool = sqlx::mysql::MySqlPool::connect(URL).await.unwrap();
-    
+
     sqlx::migrate!("./migrations").run(&pool).await.unwrap();
     
     let app_state = AppState { pool };
     HttpServer::new(move || {
-        let cors = actix_cors::Cors::default().allowed_origin("http://localhost:3000").allowed_headers(vec![ACCESS_CONTROL_ALLOW_ORIGIN, AUTHORIZATION, ACCEPT]);
+        // let cors = actix_cors::Cors::default().allowed_origin("https://elo-site.vercel.app/").allow_any_method().allow_any_header();
+        let cors = actix_cors::Cors::permissive();
         App::new()
             .wrap(cors)
             .app_data(web::Data::new(app_state.clone()))
