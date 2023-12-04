@@ -25,7 +25,7 @@ async fn main() -> std::io::Result<()> {
             .route("/form", web::post().to(create_contact))
             
     })
-    .bind(("127.0.0.1", 4000))
+    .bind(("0.0.0.0", 3000))
     .unwrap()
     .run()
     .await
